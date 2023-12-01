@@ -131,25 +131,23 @@
 <br>
 
 ## 실행 화면
+<img src="" width="400">
 
 |당겨서 새로고침|네트워크 통신 중 로딩UI 표시|
 |:---:|:---:|
-|![당겨서 새로고침](https://github.com/agilestarskim/ios-box-office/assets/79740398/9b3c2d7e-4427-42dd-a0fc-e3a8b9158abc)|![네트워크 통신 중 로딩](https://github.com/agilestarskim/ios-box-office/assets/79740398/1742fd6d-b33a-4da9-97a2-1ab68c7cd6c7)|
-
+|<img src="https://github.com/hojun-jo/Yagom-BoxOffice/assets/86751964/9abfbe6e-14c5-431b-a9cb-f16ccb1477be" width="400">|<img src="https://github.com/hojun-jo/Yagom-BoxOffice/assets/86751964/e1b20079-99cb-407c-a9fa-f9aa1078c4b0" width="400">|
 
 |영화 상세 정보 화면|날짜 선택|
 |:---:|:---:|
-|![상세화면](https://github.com/agilestarskim/ios-box-office/assets/79740398/f34a995e-8cc1-4f80-a367-eb2e5acc7485)|![날짜선택](https://github.com/agilestarskim/ios-box-office/assets/79740398/b12b11a9-0c1b-402b-9e3a-81edf1684a25)|
+|<img src="https://github.com/hojun-jo/Yagom-BoxOffice/assets/86751964/2209e40e-30c3-46a9-a1eb-adfe41f68809" width="400">|<img src="https://github.com/hojun-jo/Yagom-BoxOffice/assets/86751964/f8aff43c-9680-4dc5-a05e-b039df11456a" width="400">|
 
 |화면 모드 변경|아이콘 화면 회전|
 |:---:|:---:|
-|![화면 모드 변경](https://github.com/agilestarskim/ios-box-office/assets/79740398/c76bf4f9-6415-4c4c-a2bc-976c8a0f7a55)|![아이콘 화면 회전](https://github.com/agilestarskim/ios-box-office/assets/79740398/c2d49b3f-79ee-45b9-8d19-50f823549d3a)|
+|<img src="https://github.com/hojun-jo/Yagom-BoxOffice/assets/86751964/a5705666-7af3-40af-b414-23d8a977332d" width="400">|<img src="https://github.com/hojun-jo/Yagom-BoxOffice/assets/86751964/b06d184c-8902-40fe-a631-3a636b7f3bc1" width="400">|
 
-|아이콘 화면(세로) 다이나믹 타입|아이콘 화면(가로) 다이나믹 타입|
+|리스트 화면 다이나믹 타입|아이콘 화면 다이나믹 타입|
 |:---:|:---:|
-|![아이콘 세로 다이나믹타입](https://github.com/agilestarskim/ios-box-office/assets/79740398/c3fcf7a1-8724-4068-93af-0bf31a1ab888)|![아이콘 가로 다이나믹타입](https://github.com/agilestarskim/ios-box-office/assets/79740398/6d233373-94d6-4dba-8d6e-d95396295a91)|
-
-
+|<img src="https://github.com/hojun-jo/Yagom-BoxOffice/assets/86751964/aef68d4d-111c-446e-932e-3e2d107e4fc2" width="400">|<img src="https://github.com/hojun-jo/Yagom-BoxOffice/assets/86751964/730891e2-5b9d-4f81-bc2c-2d0603a2046f" width="400">|
 
 
 <br>
@@ -196,7 +194,7 @@ let boxOffice = getBoxOffice()
 
 #### 🔑 해결 방법
 원하는 방식을 고민하던 중 async await을 알게 되었습니다.
-async await은 이와 같은 문제 뿐만 아니라 URLSession의 쓰레드 문제, 버그발생 문제를 해결할 수 있습니다.
+async await은 위와 같은 문제 뿐만 아니라 URLSession의 쓰레드 문제, 버그발생이 쉬운 문제를 해결할 수 있습니다.
 
 ```swift
 static func fetchData<T: Decodable>(fetchType: FetchType) async throws -> T {
