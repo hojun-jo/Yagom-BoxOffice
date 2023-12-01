@@ -23,6 +23,7 @@ class BoxOfficeCollectionViewIconCell: UICollectionViewCell {
         label.adjustsFontForContentSizeCategory = true
         label.textAlignment = .center
         label.adjustsFontSizeToFitWidth = true
+        label.setContentHuggingPriority(.defaultLow, for: .vertical)
         return label
     }()
     
