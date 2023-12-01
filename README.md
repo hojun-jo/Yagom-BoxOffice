@@ -131,23 +131,22 @@
 <br>
 
 ## 실행 화면
-<img src="" width="400">
 
 |당겨서 새로고침|네트워크 통신 중 로딩UI 표시|
 |:---:|:---:|
-|<img src="https://github.com/hojun-jo/Yagom-BoxOffice/assets/86751964/9abfbe6e-14c5-431b-a9cb-f16ccb1477be" width="400">|<img src="https://github.com/hojun-jo/Yagom-BoxOffice/assets/86751964/e1b20079-99cb-407c-a9fa-f9aa1078c4b0" width="400">|
+|<img src="https://github.com/hojun-jo/Yagom-BoxOffice/assets/86751964/9abfbe6e-14c5-431b-a9cb-f16ccb1477be" width="300">|<img src="https://github.com/hojun-jo/Yagom-BoxOffice/assets/86751964/e1b20079-99cb-407c-a9fa-f9aa1078c4b0" width="300">|
 
 |영화 상세 정보 화면|날짜 선택|
 |:---:|:---:|
-|<img src="https://github.com/hojun-jo/Yagom-BoxOffice/assets/86751964/2209e40e-30c3-46a9-a1eb-adfe41f68809" width="400">|<img src="https://github.com/hojun-jo/Yagom-BoxOffice/assets/86751964/f8aff43c-9680-4dc5-a05e-b039df11456a" width="400">|
+|<img src="https://github.com/hojun-jo/Yagom-BoxOffice/assets/86751964/2209e40e-30c3-46a9-a1eb-adfe41f68809" width="300">|<img src="https://github.com/hojun-jo/Yagom-BoxOffice/assets/86751964/f8aff43c-9680-4dc5-a05e-b039df11456a" width="300">|
 
 |화면 모드 변경|아이콘 화면 회전|
 |:---:|:---:|
-|<img src="https://github.com/hojun-jo/Yagom-BoxOffice/assets/86751964/a5705666-7af3-40af-b414-23d8a977332d" width="400">|<img src="https://github.com/hojun-jo/Yagom-BoxOffice/assets/86751964/b06d184c-8902-40fe-a631-3a636b7f3bc1" width="400">|
+|<img src="https://github.com/hojun-jo/Yagom-BoxOffice/assets/86751964/a5705666-7af3-40af-b414-23d8a977332d" width="300">|<img src="https://github.com/hojun-jo/Yagom-BoxOffice/assets/86751964/b06d184c-8902-40fe-a631-3a636b7f3bc1" width="300">|
 
 |리스트 화면 다이나믹 타입|아이콘 화면 다이나믹 타입|
 |:---:|:---:|
-|<img src="https://github.com/hojun-jo/Yagom-BoxOffice/assets/86751964/aef68d4d-111c-446e-932e-3e2d107e4fc2" width="400">|<img src="https://github.com/hojun-jo/Yagom-BoxOffice/assets/86751964/730891e2-5b9d-4f81-bc2c-2d0603a2046f" width="400">|
+|<img src="https://github.com/hojun-jo/Yagom-BoxOffice/assets/86751964/aef68d4d-111c-446e-932e-3e2d107e4fc2" width="300">|<img src="https://github.com/hojun-jo/Yagom-BoxOffice/assets/86751964/730891e2-5b9d-4f81-bc2c-2d0603a2046f" width="300">|
 
 
 <br>
