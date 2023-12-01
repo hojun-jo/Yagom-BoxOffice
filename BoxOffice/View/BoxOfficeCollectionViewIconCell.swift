@@ -34,7 +34,6 @@ class BoxOfficeCollectionViewIconCell: UICollectionViewCell {
         label.textAlignment = .center
         label.minimumScaleFactor = 0.5
         label.adjustsFontSizeToFitWidth = true
-        label.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
         return label
     }()
     
@@ -43,6 +42,7 @@ class BoxOfficeCollectionViewIconCell: UICollectionViewCell {
         label.font = UIFont.preferredFont(forTextStyle: .body)
         label.adjustsFontForContentSizeCategory = true
         label.textAlignment = .center
+        label.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
         return label
     }()
     
