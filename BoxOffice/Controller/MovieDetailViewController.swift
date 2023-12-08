@@ -45,8 +45,8 @@ final class MovieDetailViewController: UIViewController {
                 async let movieInformation = self.fetchMovieInformation(movieCode: boxOfficeItem.movieCode)
                 async let posterImage = self.fetchPosterImage(movieName: boxOfficeItem.movieName)
                 
-                movieDetailView.configureMovieInformation(try await movieInformation)
-                movieDetailView.configurePosterImage(try await posterImage)                
+                movieDetailView.configureMovieInformation(keys: makeKeyTexts(), values: prettyMovieInformation(try await movieInformation))
+                movieDetailView.configurePosterImage(try await posterImage)
             } catch {
                 self.showAlert(error: error)
             }
@@ -80,6 +80,25 @@ final class MovieDetailViewController: UIViewController {
         
         
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    private func prettyMovieInformation(_ movieInformation: MovieInformation?) -> [String] {
+        guard let movieInformation = movieInformation else { return [] }
+        
+        let directors = movieInformation.directors.map(\.peopleName).joined(separator: ", ")
+        let productionYear = movieInformation.productionYear
+        let openDate = movieInformation.openDate.dateFormat
+        let runningTime = movieInformation.runningTime
+        let watchGrade = movieInformation.audits.first?.watchGrade ?? ""
+        let nations = movieInformation.nations.map(\.nationName).joined(separator: ", ")
+        let genres = movieInformation.genres.map(\.genreName).joined(separator: ", ")
+        let actors = movieInformation.actors.map(\.peopleName).joined(separator: ", ")
+        
+        return [directors, productionYear, openDate, runningTime, watchGrade, nations, genres, actors]
+    }
+    
+    private func makeKeyTexts() -> [String] {
+        return ["감독", "제작년도", "개봉일", "상영시간", "관람등급", "제작국가", "장르","배우"]
     }
 }
 

@@ -50,34 +50,13 @@ final class MovieDetailView: UIView {
         updatePosterImageViewConstraints()
     }
     
-    func configureMovieInformation(_ movieInformation: MovieInformation?) {
-        let trimmedValue = prettyMovieInformation(movieInformation)
-        let key = makeKeyTexts()
-        let keysAndValue = zip(key, trimmedValue)
+    func configureMovieInformation(keys: [String], values: [String]) {
+        let keysAndValue = zip(keys, values)
         
         for (key, value) in keysAndValue {
             let detailStackCell = createDetailStackCell(key: key, value: value)
             detailStackView.addArrangedSubview(detailStackCell)
         }
-    }
-    
-    private func prettyMovieInformation(_ movieInformation: MovieInformation?) -> [String] {
-        guard let movieInformation = movieInformation else { return [] }
-        
-        let directors = movieInformation.directors.map(\.peopleName).joined(separator: ", ")
-        let productionYear = movieInformation.productionYear
-        let openDate = movieInformation.openDate.dateFormat
-        let runningTime = movieInformation.runningTime
-        let watchGrade = movieInformation.audits.first?.watchGrade ?? ""
-        let nations = movieInformation.nations.map(\.nationName).joined(separator: ", ")
-        let genres = movieInformation.genres.map(\.genreName).joined(separator: ", ")
-        let actors = movieInformation.actors.map(\.peopleName).joined(separator: ", ")
-        
-        return [directors, productionYear, openDate, runningTime, watchGrade, nations, genres, actors]
-    }
-    
-    private func makeKeyTexts() -> [String] {
-        return ["감독", "제작년도", "개봉일", "상영시간", "관람등급", "제작국가", "장르","배우"]
     }
 }
 
