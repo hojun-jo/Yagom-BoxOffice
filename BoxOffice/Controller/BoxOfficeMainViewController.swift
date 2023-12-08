@@ -186,6 +186,17 @@ final class BoxOfficeMainViewController: UIViewController {
         )
         self.boxOfficeMainView.collectionViewReloadData()
     }
+    
+    private func getRankVariationText(boxOfficeItem: BoxOfficeItem) -> NSMutableAttributedString? {
+        let amountOfRankChange = boxOfficeItem.amountOfRankChange
+        let oldAndNew = boxOfficeItem.rankOldAndNew
+        
+        guard let rankChange = RankChangeState(amountOfRankChange, oldAndNew) else {
+            return nil
+        }
+        
+        return rankChange.getAmountOfRankChangeString(origin: amountOfRankChange)
+    }
 }
 
 // MARK: - CollectionViewRefreshControl
@@ -226,7 +237,11 @@ extension BoxOfficeMainViewController: UICollectionViewDataSource {
                 return UICollectionViewCell()
             }
             
-            cell.configureCell(boxOfficeItem: boxOfficeItem)
+            cell.configureCell(
+                rank: boxOfficeItem.rank,
+                rankVariation: getRankVariationText(boxOfficeItem: boxOfficeItem),
+                movieName: boxOfficeItem.movieName,
+                audienceNumber: "오늘 \(boxOfficeItem.audienceCount.decimalFormat) / 총 \(boxOfficeItem.accumulatedAudienceCount.decimalFormat)")
             
             return cell
         }

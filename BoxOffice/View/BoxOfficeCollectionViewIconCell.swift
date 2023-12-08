@@ -58,32 +58,20 @@ class BoxOfficeCollectionViewIconCell: UICollectionViewCell {
         return label
     }()
     
-    func configureCell(boxOfficeItem: BoxOfficeItem) {
+    func configureCell(rank: String, rankVariation: NSMutableAttributedString?, movieName: String, audienceNumber: String) {
         addSubviews()
         stackViewConstraints()
-        configureCellLabels(by: boxOfficeItem)
+        configureCellLabels(rank: rank, rankVariation: rankVariation, movieName: movieName, audienceNumber: audienceNumber)
         layer.borderColor = UIColor.black.cgColor
         layer.borderWidth = 1.0
     }
     
-    private func configureCellLabels(by boxOfficeItem: BoxOfficeItem) {
-        rankLabel.text = boxOfficeItem.rank
-        rankVariationLabel.attributedText = getRankVariationText(boxOfficeItem: boxOfficeItem)
-        movieNameLabel.text = boxOfficeItem.movieName
-        audienceNumberLabel.text = "오늘 \(boxOfficeItem.audienceCount.decimalFormat) / 총 \(boxOfficeItem.accumulatedAudienceCount.decimalFormat)"
+    private func configureCellLabels(rank: String, rankVariation: NSMutableAttributedString?, movieName: String, audienceNumber: String) {
+        rankLabel.text = rank
+        rankVariationLabel.attributedText = rankVariation
+        movieNameLabel.text = movieName
+        audienceNumberLabel.text = audienceNumber
     }
-    
-    private func getRankVariationText(boxOfficeItem: BoxOfficeItem) -> NSMutableAttributedString? {
-        let amountOfRankChange = boxOfficeItem.amountOfRankChange
-        let oldAndNew = boxOfficeItem.rankOldAndNew
-        
-        guard let rankChange = RankChangeState(amountOfRankChange, oldAndNew) else {
-            return nil
-        }
-        
-        return rankChange.getAmountOfRankChangeString(origin: amountOfRankChange)
-    }
-    
 }
 
 // MARK: - Add Subviews
