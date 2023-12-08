@@ -219,29 +219,34 @@ extension BoxOfficeMainViewController {
 extension BoxOfficeMainViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
+        guard let boxOfficeItem = boxOfficeItems[safe: indexPath.row] else {
+            return UICollectionViewCell()
+        }
+        
+        let rank = boxOfficeItem.rank
+        let rankVariation = getRankVariationText(boxOfficeItem: boxOfficeItem)
+        let movieName = boxOfficeItem.movieName
+        let audienceNumber = "오늘 \(boxOfficeItem.audienceCount.decimalFormat) / 총 \(boxOfficeItem.accumulatedAudienceCount.decimalFormat)"
+        
         switch selectedLayout {
         case .list:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BoxOfficeCollectionViewListCell.identifier, for: indexPath) as? BoxOfficeCollectionViewListCell else { return UICollectionViewCell() }
             
-            guard let boxOfficeItem = boxOfficeItems[safe: indexPath.row] else {
-                return UICollectionViewCell()
-            }
-            
-            cell.configureCell(boxOfficeItem: boxOfficeItem)
+            cell.configureCell(
+                rank: rank,
+                rankVariation: rankVariation,
+                movieName: movieName,
+                audienceNumber: audienceNumber)
             
             return cell
         case .icon:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BoxOfficeCollectionViewIconCell.identifier, for: indexPath) as? BoxOfficeCollectionViewIconCell else { return UICollectionViewCell() }
             
-            guard let boxOfficeItem = boxOfficeItems[safe: indexPath.row] else {
-                return UICollectionViewCell()
-            }
-            
             cell.configureCell(
-                rank: boxOfficeItem.rank,
-                rankVariation: getRankVariationText(boxOfficeItem: boxOfficeItem),
-                movieName: boxOfficeItem.movieName,
-                audienceNumber: "오늘 \(boxOfficeItem.audienceCount.decimalFormat) / 총 \(boxOfficeItem.accumulatedAudienceCount.decimalFormat)")
+                rank: rank,
+                rankVariation: rankVariation,
+                movieName: movieName,
+                audienceNumber: audienceNumber)
             
             return cell
         }
