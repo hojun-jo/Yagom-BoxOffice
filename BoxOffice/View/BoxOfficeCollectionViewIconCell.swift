@@ -62,8 +62,7 @@ class BoxOfficeCollectionViewIconCell: UICollectionViewCell {
         addSubviews()
         stackViewConstraints()
         configureCellLabels(rank: rank, rankVariation: rankVariation, movieName: movieName, audienceNumber: audienceNumber)
-        layer.borderColor = UIColor.black.cgColor
-        layer.borderWidth = 1.0
+        configureLayer()
     }
     
     private func configureCellLabels(rank: String, rankVariation: NSMutableAttributedString?, movieName: String, audienceNumber: String) {
@@ -71,6 +70,11 @@ class BoxOfficeCollectionViewIconCell: UICollectionViewCell {
         rankVariationLabel.attributedText = rankVariation
         movieNameLabel.text = movieName
         audienceNumberLabel.text = audienceNumber
+    }
+    
+    private func configureLayer() {
+        layer.borderColor = UIColor.black.cgColor
+        layer.borderWidth = 1.0
     }
 }
 
