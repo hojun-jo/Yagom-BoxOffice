@@ -27,9 +27,10 @@ enum FetchType {
 enum NetworkManager {
     
     static func fetchImage(movieName: String) async throws -> UIImage? {
-        let image: Image = try await fetchData(fetchType: .image(movieName: movieName))
+        let imageData = try await fetchData(fetchType: .image(movieName: movieName))
         
-        guard let urlString = image.imageDocuments.first?.imageURL,
+        guard let image = try? JSONDecoder().decode(Image.self, from: imageData),
+            let urlString = image.imageDocuments.first?.imageURL,
               let url = URL(string: urlString),
               let data = try? Data(contentsOf: url) else {
             return nil
@@ -38,7 +39,7 @@ enum NetworkManager {
         return UIImage(data: data)
     }
     
-    static func fetchData<T: Decodable>(fetchType: FetchType) async throws -> T {
+    static func fetchData(fetchType: FetchType) async throws -> Data {
         
         let request = try createRequest(fetchType: fetchType)
         
@@ -54,7 +55,7 @@ enum NetworkManager {
             throw NetworkError.badStatusCode(statusCode: httpResponse.statusCode)
         }
         
-        return try JSONDecodingManager.decode(from: data)
+        return data
     }
     
     static private func createRequest(fetchType: FetchType) throws -> URLRequest {

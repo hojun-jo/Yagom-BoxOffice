@@ -55,7 +55,8 @@ final class MovieDetailViewController: UIViewController {
     }
     
     private func fetchMovieInformation(movieCode: String) async throws -> MovieInformation? {
-        let movie: Movie = try await NetworkManager.fetchData(fetchType: .movie(code: movieCode))
+        let movieData = try await NetworkManager.fetchData(fetchType: .movie(code: movieCode))
+        let movie = try JSONDecoder().decode(Movie.self, from: movieData)
         return movie.movieResult.movieInformation
     }
     
