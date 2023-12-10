@@ -55,13 +55,28 @@ final class MovieDetailViewController: UIViewController {
     }
     
     private func fetchMovieInformation(movieCode: String) async throws -> MovieInformation? {
-        let movieData = try await NetworkManager.fetchData(fetchType: .movie(code: movieCode))
+        let movieInformationAPI = MovieInformationAPI(movieCode: movieCode)
+        let movieData = try await NetworkManager.fetchData(api: movieInformationAPI)
         let movie = try JSONDecoder().decode(Movie.self, from: movieData)
         return movie.movieResult.movieInformation
     }
     
     private func fetchPosterImage(movieName: String) async throws -> UIImage? {
-        return try await NetworkManager.fetchImage(movieName: movieName)
+        guard let daumImageAPI = DaumImageAPI(movieName: movieName) else {
+            throw NetworkError.notFoundAPIKey
+        }
+        
+        let daumImageData = try await NetworkManager.fetchData(api: daumImageAPI)
+        let imageDTO = try JSONDecoder().decode(Image.self, from: daumImageData)
+        
+        guard let urlString = imageDTO.imageDocuments.first?.imageURL else {
+            throw NetworkError.invalidURL
+        }
+        
+        let url = JustURL(url: urlString)
+        let imageData = try await NetworkManager.fetchData(api: url)
+        
+        return UIImage(data: imageData)
     }
     
     private func showAlert(error: Error) {

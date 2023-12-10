@@ -81,8 +81,9 @@ final class BoxOfficeMainViewController: UIViewController {
     }
     
     private func fetchBoxOfficeItems() async {
+        let boxOfficeAPI = BoxOfficeAPI(boxOfficeDate: selectedDate.networkFormat)
         do {
-            let boxOfficeData = try await NetworkManager.fetchData(fetchType: .boxOffice(date: selectedDate.networkFormat))
+            let boxOfficeData = try await NetworkManager.fetchData(api: boxOfficeAPI)
             let boxOffice = try JSONDecoder().decode(BoxOffice.self, from: boxOfficeData)
             
             let origin = self.boxOfficeItems

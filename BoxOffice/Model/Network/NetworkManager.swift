@@ -5,43 +5,12 @@
 //  Created by EtialMoon, Minsup on 2023/07/25.
 //
 
-import UIKit
-
-enum FetchType {
-    case boxOffice(date: String)
-    case movie(code: String)
-    case image(movieName: String)
-    
-    var url: String {
-        switch self {
-        case .boxOffice:
-            return "http://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json"
-        case .movie:
-            return "http://kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json"
-        case .image:
-            return "https://dapi.kakao.com/v2/search/image"
-        }
-    }
-}
+import Foundation
 
 enum NetworkManager {
-    
-    static func fetchImage(movieName: String) async throws -> UIImage? {
-        let imageData = try await fetchData(fetchType: .image(movieName: movieName))
+    static func fetchData<T: APIType>(api: T) async throws -> Data {
         
-        guard let image = try? JSONDecoder().decode(Image.self, from: imageData),
-            let urlString = image.imageDocuments.first?.imageURL,
-              let url = URL(string: urlString),
-              let data = try? Data(contentsOf: url) else {
-            return nil
-        }
-        
-        return UIImage(data: data)
-    }
-    
-    static func fetchData(fetchType: FetchType) async throws -> Data {
-        
-        let request = try createRequest(fetchType: fetchType)
+        let request = try createRequest(api: api)
         
         guard let (data, response) = try? await URLSession.shared.data(for: request) else {
             throw NetworkError.requestFailed
@@ -58,51 +27,23 @@ enum NetworkManager {
         return data
     }
     
-    static private func createRequest(fetchType: FetchType) throws -> URLRequest {
-        guard var urlComponents = URLComponents(string: fetchType.url) else {
+    static private func createRequest<T: APIType>(api: T) throws -> URLRequest {
+        guard var urlComponents = URLComponents(string: api.baseURL) else {
             throw NetworkError.invalidURL
         }
         
-        guard let kobisAPIKey = Bundle.main.kobisAPIKey,
-              let kakaoAPIKey = Bundle.main.kakaoAPIKey else {
-            throw NetworkError.notFoundAPIKey
+        urlComponents.queryItems = api.queryItems
+        
+        guard let url = urlComponents.url else {
+            throw NetworkError.invalidURL
         }
         
-        switch fetchType {
-        case .boxOffice(let date):
-            urlComponents.queryItems = [
-                URLQueryItem(name: "key", value: kobisAPIKey),
-                URLQueryItem(name: "targetDt", value: date)
-            ]
-            
-            guard let url = urlComponents.url else {
-                throw NetworkError.invalidURL
-            }
-            
-            return URLRequest(url: url)
-        case .movie(let code):
-            urlComponents.queryItems = [
-                URLQueryItem(name: "key", value: kobisAPIKey),
-                URLQueryItem(name: "movieCd", value: code)
-            ]
-            
-            guard let url = urlComponents.url else {
-                throw NetworkError.invalidURL
-            }
-            
-            return URLRequest(url: url)
-        case .image(let movieName):
-            urlComponents.queryItems = [URLQueryItem(name: "query", value: "\(movieName)+영화+포스터")]
-            
-            guard let url = urlComponents.url else {
-                throw NetworkError.invalidURL
-            }
-            
-            var request = URLRequest(url: url)
-            
-            request.addValue(kakaoAPIKey, forHTTPHeaderField: "Authorization")
-            
-            return request
+        var request = URLRequest(url: url)
+        
+        api.headers?.forEach { (key, value) in
+            request.addValue(value, forHTTPHeaderField: key)
         }
+        
+        return request
     }
 }
