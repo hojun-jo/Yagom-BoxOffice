@@ -15,6 +15,7 @@ extension UILabel {
         label.numberOfLines = .zero
         label.textAlignment = .center
         label.adjustsFontForContentSizeCategory = true
+        
         return label
     }
     
@@ -24,6 +25,7 @@ extension UILabel {
         label.font = UIFont.preferredFont(forTextStyle: .body)
         label.numberOfLines = .zero
         label.adjustsFontForContentSizeCategory = true
+        
         return label
     }
 }

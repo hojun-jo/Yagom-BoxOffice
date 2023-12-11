@@ -11,6 +11,7 @@ extension Bundle {
     var kakaoAPIKey: String? {
         return fetchPropertyList(domain: "KAKAO")
     }
+    
     var kobisAPIKey: String? {
         return fetchPropertyList(domain: "KOBIS")
     }

@@ -11,6 +11,7 @@ struct DaumImageAPI: APIType {
     var baseURL: String {
         return "https://dapi.kakao.com/v2/search/image"
     }
+    
     var headers: [String : String]?
     var queryItems: [URLQueryItem]?
     var apiKey: String? {
@@ -18,9 +19,7 @@ struct DaumImageAPI: APIType {
     }
     
     init?(movieName: String) {
-        guard let apiKey else {
-            return nil
-        }
+        guard let apiKey else { return nil }
         
         queryItems = [
             URLQueryItem(name: "query", value: "\(movieName)+영화+포스터")

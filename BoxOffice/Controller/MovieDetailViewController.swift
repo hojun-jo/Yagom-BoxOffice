@@ -8,29 +8,12 @@
 import UIKit
 
 final class MovieDetailViewController: UIViewController {
-    private var boxOfficeItem: BoxOfficeItem
     private let movieDetailView = MovieDetailView()
-    
-    override func loadView() {
-        view = movieDetailView
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        configureNavigation()        
-        fetchData()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        navigationController?.isToolbarHidden = true
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        navigationController?.isToolbarHidden = false
-    }
+    private var boxOfficeItem: BoxOfficeItem
     
     init(boxOfficeItem: BoxOfficeItem) {
         self.boxOfficeItem = boxOfficeItem
+        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -38,14 +21,41 @@ final class MovieDetailViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func loadView() {
+        view = movieDetailView
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setUpNavigationItems()
+        fetchData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.isToolbarHidden = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        navigationController?.isToolbarHidden = false
+    }
+    
     private func fetchData() {
         Task {
             movieDetailView.indicatorView.startAnimating()
+            
             do {
-                async let movieInformation = self.fetchMovieInformation(movieCode: boxOfficeItem.movieCode)
-                async let posterImage = self.fetchPosterImage(movieName: boxOfficeItem.movieName)
+                async let movieInformation = fetchMovieInformation(movieCode: boxOfficeItem.movieCode)
+                async let posterImage = fetchPosterImage(movieName: boxOfficeItem.movieName)
                 
-                movieDetailView.setMovieInformation(keys: makeKeyTexts(), values: prettyMovieInformation(try await movieInformation))
+                movieDetailView.setMovieInformation(
+                    keys: makeKeyTexts(),
+                    values: prettyMovieInformation(try await movieInformation)
+                )
+                
                 movieDetailView.setPosterImage(try await posterImage)
             } catch {
                 let alert = AlertBuilder()
@@ -58,8 +68,10 @@ final class MovieDetailViewController: UIViewController {
                         self?.navigationController?.popToRootViewController(animated: true)
                     }
                     .build()
+                
                 present(alert, animated: true, completion: nil)
             }
+            
             movieDetailView.indicatorView.stopAnimating()
         }
     }
@@ -68,6 +80,7 @@ final class MovieDetailViewController: UIViewController {
         let movieInformationAPI = MovieInformationAPI(movieCode: movieCode)
         let movieData = try await NetworkManager.fetchData(api: movieInformationAPI)
         let movie = try JSONDecoder().decode(Movie.self, from: movieData)
+        
         return movie.movieResult.movieInformation
     }
     
@@ -89,6 +102,10 @@ final class MovieDetailViewController: UIViewController {
         return UIImage(data: imageData)
     }
     
+    private func makeKeyTexts() -> [String] {
+        return ["감독", "제작년도", "개봉일", "상영시간", "관람등급", "제작국가", "장르","배우"]
+    }
+    
     private func prettyMovieInformation(_ movieInformation: MovieInformation?) -> [String] {
         guard let movieInformation = movieInformation else { return [] }
         
@@ -103,14 +120,12 @@ final class MovieDetailViewController: UIViewController {
         
         return [directors, productionYear, openDate, runningTime, watchGrade, nations, genres, actors]
     }
-    
-    private func makeKeyTexts() -> [String] {
-        return ["감독", "제작년도", "개봉일", "상영시간", "관람등급", "제작국가", "장르","배우"]
-    }
 }
 
+// MARK: - Configure UI
+
 extension MovieDetailViewController {
-    private func configureNavigation() {
+    private func setUpNavigationItems() {
         self.navigationItem.title = boxOfficeItem.movieName
     }
 }

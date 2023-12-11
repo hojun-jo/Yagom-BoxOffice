@@ -14,6 +14,7 @@ extension String {
         
         return formatter.string(from: NSNumber(value: Int(self) ?? Int.min)) ?? ""
     }
+    
     var dateFormat: Self {
         var stringArray = Array(self)
         stringArray.insert("-", at: 4)

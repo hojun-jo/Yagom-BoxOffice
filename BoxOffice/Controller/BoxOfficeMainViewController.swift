@@ -61,32 +61,34 @@ final class BoxOfficeMainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         boxOfficeMainView.boxOfficeCollectionView.delegate = self
         boxOfficeMainView.boxOfficeCollectionView.dataSource = self
-        NotificationCenter.default.addObserver(self, selector: #selector(setIconLayout), name: UIDevice.orientationDidChangeNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(setIconLayout), name: UIContentSizeCategory.didChangeNotification, object: nil)
-        configureNavigation()
-        configureRefreshControl()
+        
+        configureUI()
+        setUpRefreshControl()
         fetchData()
+        addObservers()
     }
     
     private func fetchData() {
         Task {
             boxOfficeMainView.boxOfficeCollectionView.isHidden = true
+            
             boxOfficeMainView.indicatorView.startAnimating()
             await self.fetchBoxOfficeItems()
             boxOfficeMainView.indicatorView.stopAnimating()
+            
             boxOfficeMainView.boxOfficeCollectionView.isHidden = false
         }
     }
     
     private func fetchBoxOfficeItems() async {
-        let boxOfficeAPI = BoxOfficeAPI(boxOfficeDate: selectedDate.networkFormat)
         do {
+            let boxOfficeAPI = BoxOfficeAPI(boxOfficeDate: selectedDate.networkFormat)
             let boxOfficeData = try await NetworkManager.fetchData(api: boxOfficeAPI)
             let boxOffice = try JSONDecoder().decode(BoxOffice.self, from: boxOfficeData)
-            
-            let origin = self.boxOfficeItems
+            let origin = boxOfficeItems
             let new = boxOffice.boxOfficeResult.boxOfficeItems
 
             if !origin.isEmpty {
@@ -98,11 +100,12 @@ final class BoxOfficeMainViewController: UIViewController {
                     return IndexPath(item: index, section: 0)
                 }
                 
-                self.boxOfficeItems = new
+                boxOfficeItems = new
                 
                 boxOfficeMainView.collectionViewReloadItem(indexPaths: indexPaths)
             } else {
-                self.boxOfficeItems = new
+                boxOfficeItems = new
+                
                 boxOfficeMainView.collectionViewReloadData()
             }
         } catch {
@@ -111,23 +114,31 @@ final class BoxOfficeMainViewController: UIViewController {
                 .setMessage("\(error.localizedDescription)")
                 .addAction(title: "OK", style: .default)
                 .build()
+            
             present(alert, animated: true, completion: nil)
         }
     }
     
-    private func configureNavigation() {
-        navigationItem.title = selectedDate.navigationFormat
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "날짜선택", style: .plain, target: self, action: #selector(tapSelectDateButton))
+    private func addObservers() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(setUpIconLayout),
+            name: UIDevice.orientationDidChangeNotification,
+            object: nil
+        )
         
-        navigationController?.isToolbarHidden = false
-        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
-        let changeModeButton = UIBarButtonItem(title: "화면 모드 변경", style: .plain, target: self, action: #selector(tapChangeModeButton))
-        toolbarItems = [flexibleSpace, changeModeButton, flexibleSpace]
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(setUpIconLayout),
+            name: UIContentSizeCategory.didChangeNotification,
+            object: nil
+        )
     }
     
     @objc private func tapSelectDateButton() {
         let boxOfficeCalendarViewController = BoxOfficeCalendarViewController(date: selectedDate)
         boxOfficeCalendarViewController.delegate = self
+        
         present(boxOfficeCalendarViewController, animated: true)
     }
     
@@ -139,24 +150,62 @@ final class BoxOfficeMainViewController: UIViewController {
                 self?.selectedLayout.toggle()
                 switch self?.selectedLayout {
                 case .list:
-                    self?.setListLayout()
+                    self?.setUpListLayout()
                 case .icon:
-                    self?.setIconLayout()
+                    self?.setUpIconLayout()
                 default:
                     return
                 }
             }
             .addAction(title: "취소", style: .cancel)
             .build()
+        
         present(sheet, animated: true)
     }
-    
-    func setListLayout() {
-        self.boxOfficeMainView.configureCollectionViewListLayout()
-        self.boxOfficeMainView.collectionViewReloadData()
+}
+
+// MARK: - Configure UI
+
+extension BoxOfficeMainViewController {
+    private func configureUI() {
+        setUpNavigationItems()
+        setUpToolbar()
     }
     
-    @objc func setIconLayout() {
+    private func setUpNavigationItems() {
+        navigationItem.title = selectedDate.navigationFormat
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            title: "날짜선택",
+            style: .plain,
+            target: self,
+            action: #selector(tapSelectDateButton)
+        )
+    }
+    
+    private func setUpToolbar() {
+        let flexibleSpace = UIBarButtonItem(
+            barButtonSystemItem: .flexibleSpace,
+            target: self,
+            action: nil
+        )
+        
+        let changeModeButton = UIBarButtonItem(
+            title: "화면 모드 변경",
+            style: .plain,
+            target: self,
+            action: #selector(tapChangeModeButton)
+        )
+        
+        toolbarItems = [flexibleSpace, changeModeButton, flexibleSpace]
+        navigationController?.isToolbarHidden = false
+    }
+    
+    private func setUpListLayout() {
+        boxOfficeMainView.configureCollectionViewListLayout()
+        boxOfficeMainView.collectionViewReloadData()
+    }
+    
+    @objc private func setUpIconLayout() {
         guard selectedLayout == .icon else { return }
         
         //iconSize 계산
@@ -178,12 +227,68 @@ final class BoxOfficeMainViewController: UIViewController {
             iconSizeHeight.up()
         }
         
-        self.boxOfficeMainView.configureCollectionViewIconLayout(
+        boxOfficeMainView.configureCollectionViewIconLayout(
             size: CGSize(
                 width: iconSizeWidth.size,
-                height: iconSizeHeight.size)
+                height: iconSizeHeight.size
+            )
         )
-        self.boxOfficeMainView.collectionViewReloadData()
+        
+        boxOfficeMainView.collectionViewReloadData()
+    }
+}
+
+// MARK: - CollectionViewDataSource
+
+extension BoxOfficeMainViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return boxOfficeItems.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let boxOfficeItem = boxOfficeItems[safe: indexPath.row] else {
+            return UICollectionViewCell()
+        }
+        
+        let rank = boxOfficeItem.rank
+        let rankVariation = getRankVariationText(boxOfficeItem: boxOfficeItem)
+        let movieName = boxOfficeItem.movieName
+        let audienceNumber = "오늘 \(boxOfficeItem.audienceCount.decimalFormat) / 총 \(boxOfficeItem.accumulatedAudienceCount.decimalFormat)"
+        
+        switch selectedLayout {
+        case .list:
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: BoxOfficeCollectionViewListCell.identifier,
+                for: indexPath
+            ) as? BoxOfficeCollectionViewListCell else {
+                return UICollectionViewCell()
+            }
+            
+            cell.setLabelText(
+                rank: rank,
+                rankVariation: rankVariation,
+                movieName: movieName,
+                audienceNumber: audienceNumber
+            )
+            
+            return cell
+        case .icon:
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: BoxOfficeCollectionViewIconCell.identifier,
+                for: indexPath
+            ) as? BoxOfficeCollectionViewIconCell else {
+                return UICollectionViewCell()
+            }
+            
+            cell.setLabelText(
+                rank: rank,
+                rankVariation: rankVariation,
+                movieName: movieName,
+                audienceNumber: audienceNumber
+            )
+            
+            return cell
+        }
     }
     
     private func getRankVariationText(boxOfficeItem: BoxOfficeItem) -> NSMutableAttributedString? {
@@ -198,79 +303,50 @@ final class BoxOfficeMainViewController: UIViewController {
     }
 }
 
-// MARK: - CollectionViewRefreshControl
-extension BoxOfficeMainViewController {
-    private func configureRefreshControl() {
-        boxOfficeMainView.boxOfficeCollectionView.refreshControl = UIRefreshControl()
-        boxOfficeMainView.boxOfficeCollectionView.refreshControl?.addTarget(self, action: #selector(handleRefreshControl), for: .valueChanged)
-    }
-    
-    @objc private func handleRefreshControl() {
-        task?.cancel()        
-        task = Task {            
-            await self.fetchBoxOfficeItems()
-            self.boxOfficeMainView.boxOfficeCollectionView.refreshControl?.endRefreshing()
-        }
-    }
-}
-
-// MARK: - CollectionViewDataSource
-extension BoxOfficeMainViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        guard let boxOfficeItem = boxOfficeItems[safe: indexPath.row] else {
-            return UICollectionViewCell()
-        }
-        
-        let rank = boxOfficeItem.rank
-        let rankVariation = getRankVariationText(boxOfficeItem: boxOfficeItem)
-        let movieName = boxOfficeItem.movieName
-        let audienceNumber = "오늘 \(boxOfficeItem.audienceCount.decimalFormat) / 총 \(boxOfficeItem.accumulatedAudienceCount.decimalFormat)"
-        
-        switch selectedLayout {
-        case .list:
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BoxOfficeCollectionViewListCell.identifier, for: indexPath) as? BoxOfficeCollectionViewListCell else { return UICollectionViewCell() }
-            
-            cell.setLabelText(
-                rank: rank,
-                rankVariation: rankVariation,
-                movieName: movieName,
-                audienceNumber: audienceNumber)
-            
-            return cell
-        case .icon:
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BoxOfficeCollectionViewIconCell.identifier, for: indexPath) as? BoxOfficeCollectionViewIconCell else { return UICollectionViewCell() }
-            
-            cell.setLabelText(
-                rank: rank,
-                rankVariation: rankVariation,
-                movieName: movieName,
-                audienceNumber: audienceNumber)
-            
-            return cell
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return boxOfficeItems.count
-    }
-}
-
 // MARK: - CollectionViewDelegate
+
 extension BoxOfficeMainViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let boxOfficeItem = boxOfficeItems[safe: indexPath.row] else { return }
+        guard let boxOfficeItem = boxOfficeItems[safe: indexPath.row] else {
+            return
+        }
         
-        let movieDetailViewController = MovieDetailViewController(boxOfficeItem: boxOfficeItem)        
+        let movieDetailViewController = MovieDetailViewController(boxOfficeItem: boxOfficeItem)
+        
         navigationController?.pushViewController(movieDetailViewController, animated: true)
     }
 }
 
+// MARK: - CollectionViewRefreshControl
+
+extension BoxOfficeMainViewController {
+    private func setUpRefreshControl() {
+        boxOfficeMainView.boxOfficeCollectionView.refreshControl = UIRefreshControl()
+        
+        boxOfficeMainView.boxOfficeCollectionView.refreshControl?.addTarget(
+            self,
+            action: #selector(handleRefreshControl),
+            for: .valueChanged
+        )
+    }
+    
+    @objc private func handleRefreshControl() {
+        task?.cancel()
+        
+        task = Task {
+            await fetchBoxOfficeItems()
+            boxOfficeMainView.boxOfficeCollectionView.refreshControl?.endRefreshing()
+        }
+    }
+}
+
 // MARK: - BoxOfficeCalendarViewControllerDelegate
+
 extension BoxOfficeMainViewController: BoxOfficeCalendarViewControllerDelegate {
     func didTapSelectedDate(_ date: Date) {
         selectedDate = date
         navigationItem.title = date.navigationFormat
+        
         fetchData()
     }
 }

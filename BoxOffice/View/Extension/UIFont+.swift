@@ -12,6 +12,7 @@ extension UIFont {
         let desc = UIFontDescriptor.preferredFontDescriptor(withTextStyle: style)
         let font = UIFont.systemFont(ofSize: desc.pointSize, weight: weight)
         let metrics = UIFontMetrics(forTextStyle: style)
+        
         return metrics.scaledFont(for: font)
     }
 }

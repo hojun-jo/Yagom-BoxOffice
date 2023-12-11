@@ -14,6 +14,7 @@ final class BoxOfficeCalendarViewController: UIViewController {
     
     init(date: Date) {
         selectedDate = date
+        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -38,9 +39,14 @@ final class BoxOfficeCalendarViewController: UIViewController {
         let dateSelection = UICalendarSelectionSingleDate(delegate: self)
         calendarView.selectionBehavior = dateSelection
         
-        dateSelection.selectedDate = Calendar.current.dateComponents([.year, .month, .day], from: selectedDate)
+        dateSelection.selectedDate = Calendar.current.dateComponents(
+            [.year, .month, .day],
+            from: selectedDate
+        )
     }
 }
+
+// MARK: - UICalendarSelectionSingleDateDelegate
 
 extension BoxOfficeCalendarViewController: UICalendarSelectionSingleDateDelegate {
     func dateSelection(_ selection: UICalendarSelectionSingleDate, didSelectDate dateComponents: DateComponents?) {
@@ -49,6 +55,7 @@ extension BoxOfficeCalendarViewController: UICalendarSelectionSingleDateDelegate
         selection.setSelected(dateComponents, animated: true)
         
         guard let selectedDate = dateComponents.date else { return }
+        
         delegate?.didTapSelectedDate(selectedDate)
         dismiss(animated: true)
     }

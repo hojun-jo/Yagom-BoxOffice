@@ -11,9 +11,11 @@ struct BoxOfficeAPI: APIType {
     var baseURL: String {
         return "http://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json"
     }
+    
     var headers: [String : String]? {
         return nil
     }
+    
     var queryItems: [URLQueryItem]?
     var apiKey: String? {
         return Bundle.main.kobisAPIKey

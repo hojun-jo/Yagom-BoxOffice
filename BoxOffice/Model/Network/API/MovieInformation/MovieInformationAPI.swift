@@ -11,9 +11,11 @@ struct MovieInformationAPI: APIType {
     var baseURL: String {
         return "http://kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json"
     }
+    
     var headers: [String : String]? {
         return nil
     }
+    
     var queryItems: [URLQueryItem]?
     var apiKey: String? {
         return Bundle.main.kobisAPIKey

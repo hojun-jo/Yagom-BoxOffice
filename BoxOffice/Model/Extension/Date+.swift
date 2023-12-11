@@ -22,6 +22,7 @@ extension Date {
         
         return Date.formatter.string(from: self)
     }
+    
     var networkFormat: String {
         Date.formatter.dateFormat = "YYYYMMdd"
         
