@@ -9,7 +9,6 @@ import Foundation
 
 enum NetworkManager {
     static func fetchData<T: APIType>(api: T) async throws -> Data {
-        
         let request = try createRequest(api: api)
         
         guard let (data, response) = try? await URLSession.shared.data(for: request) else {
