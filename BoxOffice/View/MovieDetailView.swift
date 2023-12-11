@@ -10,6 +10,7 @@ import UIKit
 final class MovieDetailView: UIView {
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
+        
         return scrollView
     }()
     
@@ -18,11 +19,13 @@ final class MovieDetailView: UIView {
         stackView.axis = .vertical
         stackView.spacing = 16
         stackView.alignment = .center
+        
         return stackView
     }()
     
     private let posterImageView: UIImageView = {
         let image = UIImageView()
+        
         return image
     }()
     
@@ -30,6 +33,7 @@ final class MovieDetailView: UIView {
         let stackView = UIStackView()
         stackView.spacing = 8
         stackView.axis = .vertical
+        
         return stackView
     }()
     
@@ -37,42 +41,26 @@ final class MovieDetailView: UIView {
     
     init() {
         super.init(frame: .zero)
-        configureView()
-        backgroundColor = .systemBackground
+        configureUI()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configurePosterImage(_ image: UIImage?) {
+    func setPosterImage(_ image: UIImage?) {
         posterImageView.image = image
+        
         updatePosterImageViewConstraints()
     }
     
-    func configureMovieInformation(keys: [String], values: [String]) {
+    func setMovieInformation(keys: [String], values: [String]) {
         let keysAndValue = zip(keys, values)
         
         for (key, value) in keysAndValue {
             let detailStackCell = createDetailStackCell(key: key, value: value)
+            
             detailStackView.addArrangedSubview(detailStackCell)
-        }
-    }
-}
-
-// MARK: - Configuration
-extension MovieDetailView {
-    func configureView() {
-        addSubviews()
-        setUpConstraints()
-    }
-    
-    private func addSubviews() {
-        addSubview(scrollView)
-        addSubview(indicatorView)
-        scrollView.addSubview(contentStackView)
-        [posterImageView, detailStackView].forEach {
-            contentStackView.addArrangedSubview($0)
         }
     }
     
@@ -81,6 +69,7 @@ extension MovieDetailView {
             let stackView = UIStackView()
             stackView.spacing = 20
             stackView.axis = .horizontal
+            
             return stackView
         }()
         
@@ -92,6 +81,7 @@ extension MovieDetailView {
         }
         
         keyLabel.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
             keyLabel.widthAnchor.constraint(equalToConstant: 60)
         ])
@@ -100,18 +90,39 @@ extension MovieDetailView {
     }
 }
 
-// MARK: - Constraints
+// MARK: - Configure UI
 extension MovieDetailView {
-    private func setUpConstraints() {
-        scrollViewConstraints()
-        contentStackViewConstraints()
-        posterImageViewConstraints()
-        detailStackViewConstraints()
-        configureIndicator()
+    private func configureUI() {
+        setUpView()
+        addSubviews()
+        setUpConstraints()
     }
     
-    private func scrollViewConstraints() {
+    private func setUpView() {
+        backgroundColor = .systemBackground
+    }
+    
+    private func addSubviews() {
+        addSubview(scrollView)
+        addSubview(indicatorView)
+        scrollView.addSubview(contentStackView)
+        
+        [posterImageView, detailStackView].forEach {
+            contentStackView.addArrangedSubview($0)
+        }
+    }
+    
+    private func setUpConstraints() {
+        setUpScrollViewConstraints()
+        setUpContentStackViewConstraints()
+        setUpPosterImageViewConstraints()
+        setUpDetailStackViewConstraints()
+        setUpIndicatorViewConstraints()
+    }
+    
+    private func setUpScrollViewConstraints() {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
             scrollView.frameLayoutGuide.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
             scrollView.frameLayoutGuide.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
@@ -121,8 +132,9 @@ extension MovieDetailView {
         ])
     }
     
-    private func contentStackViewConstraints() {
+    private func setUpContentStackViewConstraints() {
         contentStackView.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
             contentStackView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 20),
             contentStackView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -20),
@@ -131,8 +143,9 @@ extension MovieDetailView {
         ])
     }
     
-    private func posterImageViewConstraints() {
+    private func setUpPosterImageViewConstraints() {
         posterImageView.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
             posterImageView.widthAnchor.constraint(equalTo: contentStackView.widthAnchor, multiplier: 1)
         ])
@@ -140,21 +153,26 @@ extension MovieDetailView {
     
     private func updatePosterImageViewConstraints() {
         guard let imageWidth = posterImageView.image?.size.width,
-              let imageHeight = posterImageView.image?.size.height else { return }
+              let imageHeight = posterImageView.image?.size.height else {
+            return
+        }
+        
         let ratio = posterImageView.frame.width / imageWidth
         let height = ratio * imageHeight
         posterImageView.heightAnchor.constraint(equalToConstant: height).isActive = true
     }
     
-    private func detailStackViewConstraints() {
+    private func setUpDetailStackViewConstraints() {
         detailStackView.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
             detailStackView.widthAnchor.constraint(equalTo: contentStackView.widthAnchor)
         ])
     }
     
-    private func configureIndicator() {
+    private func setUpIndicatorViewConstraints() {
         indicatorView.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
             indicatorView.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor),
             indicatorView.centerYAnchor.constraint(equalTo: safeAreaLayoutGuide.centerYAnchor)

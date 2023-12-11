@@ -45,8 +45,8 @@ final class MovieDetailViewController: UIViewController {
                 async let movieInformation = self.fetchMovieInformation(movieCode: boxOfficeItem.movieCode)
                 async let posterImage = self.fetchPosterImage(movieName: boxOfficeItem.movieName)
                 
-                movieDetailView.configureMovieInformation(keys: makeKeyTexts(), values: prettyMovieInformation(try await movieInformation))
-                movieDetailView.configurePosterImage(try await posterImage)
+                movieDetailView.setMovieInformation(keys: makeKeyTexts(), values: prettyMovieInformation(try await movieInformation))
+                movieDetailView.setPosterImage(try await posterImage)
             } catch {
                 let alert = AlertBuilder()
                     .setTitle("에러")
