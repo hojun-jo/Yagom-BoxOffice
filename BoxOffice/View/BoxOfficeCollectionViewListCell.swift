@@ -14,6 +14,7 @@ final class BoxOfficeCollectionViewListCell: UICollectionViewListCell {
         label.adjustsFontForContentSizeCategory = true
         label.textAlignment = .center
         label.adjustsFontSizeToFitWidth = true
+        
         return label
     }()
     
@@ -21,6 +22,7 @@ final class BoxOfficeCollectionViewListCell: UICollectionViewListCell {
         let label = UILabel()
         label.font = UIFont.preferredFont(forTextStyle: .body)
         label.adjustsFontForContentSizeCategory = true
+        
         return label
     }()
     
@@ -29,6 +31,7 @@ final class BoxOfficeCollectionViewListCell: UICollectionViewListCell {
         label.numberOfLines = .zero
         label.font = UIFont.preferredFont(forTextStyle: .title2)
         label.adjustsFontForContentSizeCategory = true
+        
         return label
     }()
     
@@ -37,16 +40,20 @@ final class BoxOfficeCollectionViewListCell: UICollectionViewListCell {
         label.numberOfLines = .zero
         label.font = UIFont.preferredFont(forTextStyle: .body)
         label.adjustsFontForContentSizeCategory = true
+        
         return label
     }()
     
-    func configureCell(rank: String, rankVariation: NSMutableAttributedString?, movieName: String, audienceNumber: String) {
-        addSubviews()
-        setUpConstraints()
-        configureCellLabels(rank: rank, rankVariation: rankVariation, movieName: movieName, audienceNumber: audienceNumber)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        configureUI()
     }
     
-    private func configureCellLabels(rank: String, rankVariation: NSMutableAttributedString?, movieName: String, audienceNumber: String) {
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setLabelText(rank: String, rankVariation: NSMutableAttributedString?, movieName: String, audienceNumber: String) {
         rankLabel.text = rank
         rankVariationLabel.attributedText = rankVariation
         movieNameLabel.text = movieName
@@ -54,33 +61,40 @@ final class BoxOfficeCollectionViewListCell: UICollectionViewListCell {
     }
 }
 
-// MARK: - Add Subviews
+// MARK: - Configure UI
+
 extension BoxOfficeCollectionViewListCell {
+    private func configureUI() {
+        setUpView()
+        addSubviews()
+        setUpConstraints()
+    }
+    
+    private func setUpView() {
+        accessories = [.disclosureIndicator()]
+    }
+    
     private func addSubviews() {
         [rankLabel, rankVariationLabel, movieNameLabel, audienceNumberLabel].forEach {
             addSubview($0)
         }
-        
-        accessories = [.disclosureIndicator()]
     }
-}
 
-// MARK: - Constraints
-extension BoxOfficeCollectionViewListCell {
     private func setUpConstraints() {
-        rankLabelConstraints()
-        rankVariationLabelConstraints()
-        movieNameLabelConstraints()
-        audienceNumberLabelConstraints()
-        separatorConstraints()
+        setUpRankLabelConstraints()
+        setUpRankVariationLabelConstraints()
+        setUpMovieNameLabelConstraints()
+        setUpAudienceNumberLabelConstraints()
+        setUpSeparatorConstraints()
     }
     
-    private func separatorConstraints() {
+    private func setUpSeparatorConstraints() {
         separatorLayoutGuide.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
     }
     
-    private func rankLabelConstraints() {
+    private func setUpRankLabelConstraints() {
         rankLabel.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
             rankLabel.topAnchor.constraint(equalTo: topAnchor, constant: 12),
             rankLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 24),
@@ -88,8 +102,9 @@ extension BoxOfficeCollectionViewListCell {
         ])
     }
     
-    private func rankVariationLabelConstraints() {
+    private func setUpRankVariationLabelConstraints() {
         rankVariationLabel.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
             rankVariationLabel.topAnchor.constraint(equalTo: rankLabel.bottomAnchor),
             rankVariationLabel.centerXAnchor.constraint(equalTo: rankLabel.centerXAnchor),
@@ -97,8 +112,9 @@ extension BoxOfficeCollectionViewListCell {
         ])
     }
     
-    private func movieNameLabelConstraints() {
+    private func setUpMovieNameLabelConstraints() {
         movieNameLabel.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
             movieNameLabel.leadingAnchor.constraint(equalTo: rankLabel.trailingAnchor, constant: 24),
             movieNameLabel.trailingAnchor.constraint(equalTo:  contentView.trailingAnchor),
@@ -107,8 +123,9 @@ extension BoxOfficeCollectionViewListCell {
         ])
     }
     
-    private func audienceNumberLabelConstraints() {
+    private func setUpAudienceNumberLabelConstraints() {
         audienceNumberLabel.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
             audienceNumberLabel.leadingAnchor.constraint(equalTo: movieNameLabel.leadingAnchor),
             audienceNumberLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),

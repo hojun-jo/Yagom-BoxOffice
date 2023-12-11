@@ -231,7 +231,7 @@ extension BoxOfficeMainViewController: UICollectionViewDataSource {
         case .list:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BoxOfficeCollectionViewListCell.identifier, for: indexPath) as? BoxOfficeCollectionViewListCell else { return UICollectionViewCell() }
             
-            cell.configureCell(
+            cell.setLabelText(
                 rank: rank,
                 rankVariation: rankVariation,
                 movieName: movieName,
