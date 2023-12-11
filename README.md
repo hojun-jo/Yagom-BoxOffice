@@ -1,5 +1,7 @@
 # 🎬🍿박스오피스🍿🎬
 
+> 팀 프로젝트 기간 : 2023.07. ~ 2023.08.<br>리팩토링 : 2023.12. ~
+
 ## 📖 목차
 1. [소개](#소개)
 2. [팀원](#팀원)
@@ -26,7 +28,7 @@
 
 ## 팀원
 
-|  minsup | Etial Moon |
+| minsup | Etial Moon |
 | :--------: | :--------: |
 | <Img src = "https://avatars.githubusercontent.com/u/79740398?v=4" width="200"> |<Img src="https://avatars.githubusercontent.com/u/86751964?v=4" width="200" height="200"> |
 |[Github](https://github.com/agilestarskim) |[Github](https://github.com/hojun-jo) |
@@ -60,6 +62,7 @@
 ## 프로젝트 구조
 
 ### 폴더 구조
+    BoxOffice
     ├── Appication
     │   ├── AppDelegate.swift
     │   └── SceneDelegate.swift
@@ -70,20 +73,7 @@
     │   └── Protocol
     │       └── BoxOfficeCalendarViewControllerDelegate.swift
     ├── Model
-    │   ├── DTO
-    │   │   ├── BoxOffice
-    │   │   │   ├── BoxOffice.swift
-    │   │   │   ├── BoxOfficeItem.swift
-    │   │   │   └── BoxOfficeResult.swift
-    │   │   ├── Image
-    │   │   │   ├── Image.swift
-    │   │   │   └── ImageDocument.swift
-    │   │   └── Movie
-    │   │       ├── Movie.swift
-    │   │       ├── MovieInformation.swift
-    │   │       └── MovieResult.swift
-    │   ├── Decoding
-    │   │   └── JSONDecodingManager.swift
+    │   ├── AlertBuilder.swift
     │   ├── Error
     │   │   ├── DecodingError.swift
     │   │   └── NetworkError.swift
@@ -93,11 +83,36 @@
     │   │   ├── Date+.swift
     │   │   └── String+.swift
     │   ├── Network
+    │   │   ├── API
+    │   │   │   ├── BoxOffice
+    │   │   │   │   ├── BoxOfficeAPI.swift
+    │   │   │   │   └── DTO
+    │   │   │   │       ├── BoxOffice.swift
+    │   │   │   │       ├── BoxOfficeItem.swift
+    │   │   │   │       └── BoxOfficeResult.swift
+    │   │   │   ├── DaumImage
+    │   │   │   │   ├── DTO
+    │   │   │   │   │   ├── Image.swift
+    │   │   │   │   │   └── ImageDocument.swift
+    │   │   │   │   └── DaumImageAPI.swift
+    │   │   │   ├── Interface
+    │   │   │   │   └── APIType.swift
+    │   │   │   ├── JustURL.swift
+    │   │   │   └── MovieInformation
+    │   │   │       ├── DTO
+    │   │   │       │   ├── Movie.swift
+    │   │   │       │   ├── MovieInformation.swift
+    │   │   │       │   └── MovieResult.swift
+    │   │   │       └── MovieInformationAPI.swift
     │   │   └── NetworkManager.swift
     │   └── RankChangeState.swift
     ├── Resource
     │   ├── APIKey.plist
     │   ├── Assets.xcassets
+    │   │   ├── AccentColor.colorset
+    │   │   │   └── Contents.json
+    │   │   ├── AppIcon.appiconset
+    │   │   │   └── Contents.json
     │   │   ├── Contents.json
     │   │   └── boxOfficeTestSample.dataset
     │   │       ├── Contents.json
@@ -121,13 +136,9 @@
 <br>
 
 ### 다이어그램
-#### Controller
-![](https://hackmd.io/_uploads/B1mJi8hhn.png)
+<img width="2752" alt="boxoffice" src="https://github.com/hojun-jo/Yagom-BoxOffice/assets/86751964/3c56fc4a-283d-4913-b234-b1092daa2c40">
 
-#### Model
-![](https://hackmd.io/_uploads/BkIk2Un33.png)
-
-
+<br>
 <br>
 
 ## 실행 화면
