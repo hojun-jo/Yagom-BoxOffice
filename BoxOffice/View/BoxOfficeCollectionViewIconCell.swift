@@ -8,12 +8,12 @@
 import UIKit
 
 class BoxOfficeCollectionViewIconCell: UICollectionViewCell {
-    
-    private let stackView: UIStackView = {
+    private let contentStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .equalSpacing
+        
         return stackView
     }()
     
@@ -24,6 +24,7 @@ class BoxOfficeCollectionViewIconCell: UICollectionViewCell {
         label.textAlignment = .center
         label.adjustsFontSizeToFitWidth = true
         label.setContentHuggingPriority(.defaultLow, for: .vertical)
+        
         return label
     }()
     
@@ -35,6 +36,7 @@ class BoxOfficeCollectionViewIconCell: UICollectionViewCell {
         label.textAlignment = .center
         label.minimumScaleFactor = 0.5
         label.adjustsFontSizeToFitWidth = true
+        
         return label
     }()
     
@@ -44,6 +46,7 @@ class BoxOfficeCollectionViewIconCell: UICollectionViewCell {
         label.adjustsFontForContentSizeCategory = true
         label.textAlignment = .center
         label.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
+        
         return label
     }()
     
@@ -55,48 +58,62 @@ class BoxOfficeCollectionViewIconCell: UICollectionViewCell {
         label.font = UIFont.preferredFont(forTextStyle: .body)
         label.adjustsFontForContentSizeCategory = true
         label.textAlignment = .center
+        
         return label
     }()
     
-    func configureCell(rank: String, rankVariation: NSMutableAttributedString?, movieName: String, audienceNumber: String) {
-        addSubviews()
-        stackViewConstraints()
-        configureCellLabels(rank: rank, rankVariation: rankVariation, movieName: movieName, audienceNumber: audienceNumber)
-        configureLayer()
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        configureUI()
     }
     
-    private func configureCellLabels(rank: String, rankVariation: NSMutableAttributedString?, movieName: String, audienceNumber: String) {
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setLabelText(
+        rank: String,
+        rankVariation: NSMutableAttributedString?,
+        movieName: String,
+        audienceNumber: String
+    ) {
         rankLabel.text = rank
         rankVariationLabel.attributedText = rankVariation
         movieNameLabel.text = movieName
         audienceNumberLabel.text = audienceNumber
     }
+}
+
+// MARK: - Configure UI
+
+extension BoxOfficeCollectionViewIconCell {
+    private func configureUI() {
+        setUpLayer()
+        addSubviews()
+        setUpContentStackViewConstraints()
+    }
     
-    private func configureLayer() {
+    private func setUpLayer() {
         layer.borderColor = UIColor.black.cgColor
         layer.borderWidth = 1.0
     }
-}
-
-// MARK: - Add Subviews
-extension BoxOfficeCollectionViewIconCell {
+    
     private func addSubviews() {
-        addSubview(stackView)
-        stackView.addArrangedSubview(rankLabel)
-        stackView.addArrangedSubview(movieNameLabel)
-        stackView.addArrangedSubview(rankVariationLabel)
-        stackView.addArrangedSubview(audienceNumberLabel)
+        [rankLabel, movieNameLabel, rankVariationLabel, audienceNumberLabel].forEach {
+            contentStackView.addArrangedSubview($0)
+        }
+        
+        addSubview(contentStackView)
     }
-}
-
-extension BoxOfficeCollectionViewIconCell {
-    private func stackViewConstraints() {
-        stackView.translatesAutoresizingMaskIntoConstraints = false
+    
+    private func setUpContentStackViewConstraints() {
+        contentStackView.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: topAnchor, constant: 8),
-            stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
-            stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
-            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8)
+            contentStackView.topAnchor.constraint(equalTo: topAnchor, constant: 8),
+            contentStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
+            contentStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
+            contentStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8)
         ])
     }
 }
