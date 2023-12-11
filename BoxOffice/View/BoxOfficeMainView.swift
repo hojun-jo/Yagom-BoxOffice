@@ -8,11 +8,11 @@
 import UIKit
 
 final class BoxOfficeMainView: UIView {
-    
     typealias IconSize = BoxOfficeMainViewController.Layout.IconSize
     
     let boxOfficeCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
+        
         return collectionView
     }()
     
@@ -20,9 +20,8 @@ final class BoxOfficeMainView: UIView {
     
     init() {
         super.init(frame: .zero)
-        configureView()
-        configureCollectionViewListLayout()        
-        backgroundColor = .systemBackground
+        configureUI()
+        configureCollectionViewListLayout()
     }
     
     required init?(coder: NSCoder) {
@@ -39,9 +38,9 @@ final class BoxOfficeMainView: UIView {
     
     func configureCollectionViewListLayout() {
         boxOfficeCollectionView.register(cellClass: BoxOfficeCollectionViewListCell.self)
+        
         let configuration = UICollectionLayoutListConfiguration(appearance: .plain)
         let layout = UICollectionViewCompositionalLayout.list(using: configuration)
-        
         boxOfficeCollectionView.collectionViewLayout = layout
     }
     
@@ -52,44 +51,54 @@ final class BoxOfficeMainView: UIView {
             widthDimension: .fractionalWidth(size.width),
             heightDimension: .fractionalHeight(1.0)
         )
-        
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        item.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12)
-        
+        item.contentInsets = NSDirectionalEdgeInsets(
+            top: 8,
+            leading: 12,
+            bottom: 8,
+            trailing: 12
+        )
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
             heightDimension: .fractionalHeight(size.height)
         )
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize,
-                                                         subitems: [item])
-        
+        let group = NSCollectionLayoutGroup.horizontal(
+            layoutSize: groupSize,
+            subitems: [item]
+        )
         let section = NSCollectionLayoutSection(group: group)
-
         let layout = UICollectionViewCompositionalLayout(section: section)
-        
         boxOfficeCollectionView.collectionViewLayout = layout
     }
-    
 }
 
-// MARK: - Constraints
+// MARK: - Configure UI
+
 extension BoxOfficeMainView {
-    func configureView() {
+    private func configureUI() {
+        setUpView()
         addSubviews()
         setUpConstraints()
     }
     
+    private func setUpView() {
+        backgroundColor = .systemBackground
+    }
+    
     private func addSubviews() {
-        addSubview(boxOfficeCollectionView)
+        [boxOfficeCollectionView, indicatorView].forEach {
+            addSubview($0)
+        }
     }
     
     private func setUpConstraints() {
-        boxOfficeCollectionViewConstraints()
-        indicatorViewConstraints()
+        setUpBoxOfficeCollectionViewConstraints()
+        setUpIndicatorViewConstraints()
     }
     
-    private func boxOfficeCollectionViewConstraints() {
+    private func setUpBoxOfficeCollectionViewConstraints() {
         boxOfficeCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
             boxOfficeCollectionView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             boxOfficeCollectionView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
@@ -98,9 +107,8 @@ extension BoxOfficeMainView {
         ])
     }
     
-    private func indicatorViewConstraints() {
+    private func setUpIndicatorViewConstraints() {
         indicatorView.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(indicatorView)
         
         NSLayoutConstraint.activate([
             indicatorView.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor),
