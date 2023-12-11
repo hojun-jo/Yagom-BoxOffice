@@ -48,7 +48,17 @@ final class MovieDetailViewController: UIViewController {
                 movieDetailView.configureMovieInformation(keys: makeKeyTexts(), values: prettyMovieInformation(try await movieInformation))
                 movieDetailView.configurePosterImage(try await posterImage)
             } catch {
-                self.showAlert(error: error)
+                let alert = AlertBuilder()
+                    .setTitle("에러")
+                    .setMessage("\(error.localizedDescription)")
+                    .addAction(title: "재시도", style: .default) { [weak self] _ in
+                        self?.fetchData()
+                    }
+                    .addAction(title: "확인", style: .default) { [weak self] _ in
+                        self?.navigationController?.popToRootViewController(animated: true)
+                    }
+                    .build()
+                present(alert, animated: true, completion: nil)
             }
             movieDetailView.indicatorView.stopAnimating()
         }
@@ -77,25 +87,6 @@ final class MovieDetailViewController: UIViewController {
         let imageData = try await NetworkManager.fetchData(api: url)
         
         return UIImage(data: imageData)
-    }
-    
-    private func showAlert(error: Error) {
-        let alert = UIAlertController(
-            title: "에러",
-            message: "\(error.localizedDescription)",
-            preferredStyle: .alert
-        )
-        
-        alert.addAction(UIAlertAction(title: "재시도", style: .default, handler: { _ in
-            self.fetchData()
-        }))
-        
-        alert.addAction(UIAlertAction(title: "확인", style: .default, handler: { _ in
-            self.navigationController?.popToRootViewController(animated: true)
-        }))
-        
-        
-        self.present(alert, animated: true, completion: nil)
     }
     
     private func prettyMovieInformation(_ movieInformation: MovieInformation?) -> [String] {

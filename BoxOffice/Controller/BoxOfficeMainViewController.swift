@@ -106,13 +106,12 @@ final class BoxOfficeMainViewController: UIViewController {
                 boxOfficeMainView.collectionViewReloadData()
             }
         } catch {
-            let alert = UIAlertController(
-                title: "에러",
-                message: "\(error.localizedDescription)",
-                preferredStyle: .alert
-            )
-            alert.addAction(UIAlertAction(title: "OK", style: .default))
-            self.present(alert, animated: true, completion: nil)
+            let alert = AlertBuilder()
+                .setTitle("에러")
+                .setMessage("\(error.localizedDescription)")
+                .addAction(title: "OK", style: .default)
+                .build()
+            present(alert, animated: true, completion: nil)
         }
     }
     
@@ -133,24 +132,22 @@ final class BoxOfficeMainViewController: UIViewController {
     }
     
     @objc private func tapChangeModeButton() {
-        let sheet = UIAlertController(title: "화면모드변경", message: nil, preferredStyle: .actionSheet)
-        let action = UIAlertAction(
-            title: selectedLayout == .list ? "아이콘" : "리스트",
-            style: .default,
-            handler: { [weak self] _ in
-                guard let self else { return }
-                self.selectedLayout.toggle()
-                switch self.selectedLayout {
+        let sheet = AlertBuilder()
+            .setTitle("화면모드변경")
+            .setPreferredStyle(.actionSheet)
+            .addAction(title: selectedLayout == .list ? "아이콘" : "리스트", style: .default) { [weak self] _ in
+                self?.selectedLayout.toggle()
+                switch self?.selectedLayout {
                 case .list:
-                    self.setListLayout()
+                    self?.setListLayout()
                 case .icon:
-                    self.setIconLayout()
+                    self?.setIconLayout()
+                default:
+                    return
                 }
             }
-        )
-        let cancel = UIAlertAction(title: "취소", style: .cancel)
-        sheet.addAction(action)
-        sheet.addAction(cancel)
+            .addAction(title: "취소", style: .cancel)
+            .build()
         present(sheet, animated: true)
     }
     
