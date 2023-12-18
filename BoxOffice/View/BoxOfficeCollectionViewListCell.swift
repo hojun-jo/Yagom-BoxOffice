@@ -62,7 +62,12 @@ final class BoxOfficeCollectionViewListCell: UICollectionViewListCell {
         audienceNumberLabel.text = nil
     }
     
-    func setLabelText(rank: String, rankVariation: NSMutableAttributedString?, movieName: String, audienceNumber: String) {
+    func setLabelText(
+        rank: String,
+        rankVariation: NSMutableAttributedString?,
+        movieName: String,
+        audienceNumber: String
+    ) {
         rankLabel.text = rank
         rankVariationLabel.attributedText = rankVariation
         movieNameLabel.text = movieName
