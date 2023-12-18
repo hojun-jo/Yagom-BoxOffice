@@ -71,6 +71,15 @@ class BoxOfficeCollectionViewIconCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        rankLabel.text = nil
+        rankVariationLabel.text = nil
+        movieNameLabel.text = nil
+        audienceNumberLabel.text = nil
+    }
+    
     func setLabelText(
         rank: String,
         rankVariation: NSMutableAttributedString?,
