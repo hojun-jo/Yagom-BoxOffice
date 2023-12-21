@@ -207,25 +207,22 @@ let boxOffice = getBoxOffice()
 async await은 위와 같은 문제 뿐만 아니라 URLSession의 쓰레드 문제, 버그발생이 쉬운 문제를 해결할 수 있습니다.
 
 ```swift
-static func fetchData<T: Decodable>(fetchType: FetchType) async throws -> T {
-
-    guard let url = fetchType.url else {
-        throw NetworkError.invalidURL
-    }
-
-    guard let (data, response) = try? await URLSession.shared.data(from: url) else {
+static func fetchData<T: APIType>(api: T) async throws -> Data {
+    let request = try createRequest(api: api)
+    
+    guard let (data, response) = try? await URLSession.shared.data(for: request) else {
         throw NetworkError.requestFailed
     }
-
+    
     guard let httpResponse = response as? HTTPURLResponse else {
         throw NetworkError.invalidHTTPResponse
     }
-
+    
     guard (200..<300) ~= httpResponse.statusCode else {
         throw NetworkError.badStatusCode(statusCode: httpResponse.statusCode)
     }
-
-    return try decode(from: data)
+    
+    return data
 }
 ```
 
