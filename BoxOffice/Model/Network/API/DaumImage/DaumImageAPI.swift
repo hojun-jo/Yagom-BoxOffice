@@ -8,7 +8,7 @@
 import Foundation
 
 struct DaumImageAPI: APIType {
-    var baseURL: String {
+    var endpointURL: String {
         return "https://dapi.kakao.com/v2/search/image"
     }
     

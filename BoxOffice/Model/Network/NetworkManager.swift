@@ -27,7 +27,7 @@ enum NetworkManager {
     }
     
     static private func createRequest<T: APIType>(api: T) throws -> URLRequest {
-        guard var urlComponents = URLComponents(string: api.baseURL) else {
+        guard var urlComponents = URLComponents(string: api.endpointURL) else {
             throw NetworkError.invalidURL
         }
         

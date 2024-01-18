@@ -8,7 +8,7 @@
 import Foundation
 
 struct MovieInformationAPI: APIType {
-    var baseURL: String {
+    var endpointURL: String {
         return "http://kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json"
     }
     
